@@ -1,0 +1,35 @@
+#! /bin/bash -l
+#Initialse time
+SUBUH="5:57"
+ZOHOR="13:21"
+MAGHRIB="19:18"
+
+#get solat time from JAKIM
+#https://www.e-solat.gov.my/index.php?r=esolatApi/xmlfeed&zon=SGR01
+my_array=($(lynx -dump https://www.e-solat.gov.my/index.php?r=esolatApi/xmlfeed\&zon=SGR01|\
+cut --complement -d "," -f 1,3,4|\
+grep -v H.S|cut --complement -d "M" -f 1))
+arrayLen=${#my_array[@]}
+arrayWaq=("Imsak" "Subuh" "Syuruk" "Zuhur" "Asar" "Maghrib" "Isyak")
+echo "raw $(lynx -dump https://www.e-solat.gov.my/index.php?r=esolatApi/xmlfeed\&zon=SGR01)"
+echo "Imsak ${my_array[7]}" 
+echo "Imsak ${my_array[7]:0:5}" 
+echo "Subuh ${my_array[8]:0:5}"
+echo "Syuruk ${my_array[9]:0:5}"
+echo "Zohor ${my_array[10]:0:5}"
+echo "Asar ${my_array[11]:0:5}"
+echo "Maghrib ${my_array[12]:0:5}"
+echo "Isya ${my_array[13]:0:5}"
+echo "Tarikh  $(date +"%d-%m-%y")"
+
+if [ -z "${my_array[3]}" ]; then
+   echo " Subuh kosong"
+
+   my_array[3]=$SUBUH
+   my_array[5]=$ZOHOR
+   my_array[7]=$MAGHRIB
+
+  echo "Subuh ${my_array[3]}"
+  echo "Zohor ${my_array[5]}"
+  echo "Maghrib ${my_array[7]}"
+fi
